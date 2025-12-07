@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <iostream>
+#include <GL/glut.h>
+using namespace std;
+
+int x1, y1, x2, y2, r;
+
+void plot(int x, int y)
+{
+	glBegin(GL_POINTS);
+	glVertex2i(x, y);
+	glEnd();
+}
+
+
+void myInit (void)
+{
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glPointSize(4.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0.0, 640.0, 0.0, 480.0);
+}
+
+
+void midPointCircleAlgo(int cx, int cy)
+{
+	int x = 0;
+	int y = r;
+	float decision = 1 - r;
+	plot(x, y);
+
+	while (y > x)
+	{
+		if (decision < 0)
+		{
+			x++;
+			decision += 2*x+1;
+		}
+		else
+		{
+			y--;
+			x++;
+			decision += 2*(x-y)+1;
+		}
+		plot(x+cx, y+cy);
+		plot(x+cx, -y+cy);
+		plot(-x+cx, y+cy);
+		plot(-x+cx, -y+cy);
+		plot(y+cx, x+cy);
+		plot(-y+cx, x+cy);
+		plot(y+cx, -x+cy);
+		plot(-y+cx, -x+cy);
+	}
+
+}
+
+void drawLine(int a, int b, int c, int d)
+{
+    glColor3f(1,0,0);
+    glLineWidth(3);
+    glBegin(GL_LINES);
+        glVertex2i(a,b);
+        glVertex2i(c,d);
+    glEnd();
+}
+
+void myDisplay(void)
+{
+	glClear (GL_COLOR_BUFFER_BIT);
+	glColor3f (0.0, 0.0, 0.0);
+	glPointSize(1.0);
+
+	midPointCircleAlgo(x1,y1);
+	midPointCircleAlgo(x2,y2);
+
+	drawLine(100,150,150,350);
+	drawLine(150,350,200,350);
+
+	drawLine(300,150,350,300);
+	drawLine(320,300,360,300);
+
+	drawLine(125,250,350,250);
+	drawLine(300,150,400,150);
+
+	drawLine(125,250,300,150);
+	drawLine(350,250,400,150);
+
+	glFlush ();
+}
+
+int main(int argc, char** argv)
+{
+	x1 = 100;
+	y1 = 150;
+
+	x2 = 400;
+	y2 = 150;
+
+	r = 50;
+
+
+	glutInit(&argc, argv);
+	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowSize (640, 480);
+	glutInitWindowPosition (100, 150);
+	glutCreateWindow ("Line Drawing Alogrithms");
+	glutDisplayFunc(myDisplay);
+	myInit ();
+	glutMainLoop();
+
+}
